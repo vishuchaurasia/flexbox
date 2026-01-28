@@ -1,0 +1,15 @@
+
+{% extends "base.html" %}
+
+{% block page_title %}{% trans %}Page Not Found{% endtrans %}{% endblock %}
+
+{% block content %}
+<div class="fb-error fb-surface fb-surface--shadow fb-section text-center">
+    <h1 class="display-5 fw-bold mb-2">404</h1>
+    <h2 class="h5 fb-page-title mb-2">{% trans %}Page not found{% endtrans %}</h2>
+    <p class="fb-muted mb-4">{% trans %}Sorry, that page doesn't exist.{% endtrans %}</p>
+    <a class="btn btn-primary" href="{{ url_for('public.home') }}">
+        {% trans %}Go home{% endtrans %}
+    </a>
+</div>
+{% endblock %}
