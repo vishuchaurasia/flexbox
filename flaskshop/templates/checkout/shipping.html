@@ -1,0 +1,64 @@
+{% extends "checkout/details.html" %}
+{% import '_macros.html' as macros %}
+{% block forms %}
+<form method="post" novalidate class="checkout__shipping">
+  <div class="row g-3">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+      <div class="mb-1">
+        <h2 class="h5 mb-2">{% trans %}Shipping address{% endtrans %}</h2>
+        <p class="fb-muted mb-3">{% trans %}Choose an existing address or enter a new one.{% endtrans %}</p>
+      </div>
+
+      {% for address in current_user.addresses %}
+      <div class="radio address_hide fb-radio-card mb-2">
+        <label>
+          <input type="radio" name="address_sel" value="{{ address.id }}" id="address_{{ address.id }}"
+            {% if loop.first %}checked{%endif%} />
+          <div class="address-details">
+            {{ macros.format_address(address) }}
+          </div>
+        </label>
+      </div>
+      {% endfor %}
+
+      <div class="radio address_show col-12 float-left fb-radio-card mb-2">
+        <label>
+          <input type="radio" name="address_sel" value="new" id="address_new">
+          {% trans %}Enter a new address{% endtrans %}
+        </label>
+      </div>
+
+
+      <div class="checkout__new-address">
+        <div class="address_show col-12 float-left">
+          {% include "account/partials/address_form.html" %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row mt-3">
+    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+      <div class="mb-1">
+        <h2 class="h5 mb-2">{% trans %}Shipping method{% endtrans %}</h2>
+        <p class="fb-muted mb-3">{% trans %}Select the delivery option that works best for you.{% endtrans %}</p>
+      </div>
+      {% for method in shipping_methods %}
+      <div class="radio col-12 col-md-6 float-left fb-radio-card mb-2">
+        <label>
+          <input type="radio" name="shipping_method" value="{{ method.id }}" id="shipping_{{ method.id }}"
+            {% if loop.first %}checked{%endif%} />
+          <div class="address-details">
+            {{ method }}
+          </div>
+        </label>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="d-flex justify-content-end mt-3">
+    <button type="submit" class="btn btn-primary">
+      {% trans %}Continue{% endtrans %}
+    </button>
+  </div>
+</form>
+{% endblock %}
