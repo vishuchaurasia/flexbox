@@ -26,7 +26,9 @@ class DBConfig:
     db_name = os.getenv("DB_NAME", "flaskshop")
     if db_type == "postgresql":
         db_uri = f"postgresql://{user}:{passwd}@{host}:{port}/{db_name}"
-    elif db_type == "mysql":
+    elif db_type == "sqlite":
+        db_uri = os.getenv("DB_URI", "sqlite:///flaskshop.db")
+    else:  # mysql (default)
         db_uri = (
             f"mysql+pymysql://{user}:{passwd}@{host}:{port}/{db_name}?charset=utf8mb4"
         )

@@ -37,7 +37,7 @@ from flaskshop.settings import Config
 fake = Factory.create()
 
 
-class SaleorProvider(BaseProvider):
+class FlexBoxProvider(BaseProvider):
     def money(self):
         return fake.pydecimal(2, 2, positive=True)
 
@@ -45,7 +45,7 @@ class SaleorProvider(BaseProvider):
         return random.choice(ShippingMethod.query.all())
 
 
-fake.add_provider(SaleorProvider)
+fake.add_provider(FlexBoxProvider)
 
 GROCERIES_CATEGORY = {"name": "Groceries", "image_name": "groceries.jpg"}
 
@@ -55,7 +55,7 @@ DEFAULT_SCHEMA = {
         "product_attributes": {
             "Color": ["Blue", "White"],
             "Collar": ["Round", "V-Neck", "Polo"],
-            "Brand": ["Saleor"],
+            "Brand": ["FlexBox"],
         },
         "variant_titles": ["XS", "S", "M", "L", "XL", "XXL"],
         "images_dir": "t-shirts/",
@@ -63,7 +63,7 @@ DEFAULT_SCHEMA = {
     },
     "Mugs": {
         "category": {"name": "Accessories", "image_name": "accessories.jpg"},
-        "product_attributes": {"Brand": ["Saleor"]},
+        "product_attributes": {"Brand": ["FlexBox"]},
         "variant_titles": [],
         "images_dir": "mugs/",
         "is_shipping_required": True,
@@ -76,7 +76,7 @@ DEFAULT_SCHEMA = {
         },
         "product_attributes": {
             "Coffee Genre": ["Arabica", "Robusta"],
-            "Brand": ["Saleor"],
+            "Brand": ["FlexBox"],
         },
         "variant_titles": ["100g", "250g", "500g", "1kg"],
         "different_variant_prices": True,
@@ -89,7 +89,7 @@ DEFAULT_SCHEMA = {
             "image_name": "candies.jpg",
             "parent": GROCERIES_CATEGORY,
         },
-        "product_attributes": {"Flavor": ["Sour", "Sweet"], "Brand": ["Saleor"]},
+        "product_attributes": {"Flavor": ["Sour", "Sweet"], "Brand": ["FlexBox"]},
         "variant_titles": ["100g", "250g", "500g"],
         "images_dir": "candy/",
         "is_shipping_required": True,
@@ -98,7 +98,7 @@ DEFAULT_SCHEMA = {
         "category": {"name": "Books", "image_name": "books.jpg"},
         "product_attributes": {
             "Author": ["John Doe", "Milionare Pirate"],
-            "Publisher": ["Mirumee Press", "Saleor Publishing"],
+            "Publisher": ["FlexBox Press", "FlexBox Publishing"],
             "Language": ["English", "Pirate"],
         },
         "variant_titles": [],
@@ -109,7 +109,7 @@ DEFAULT_SCHEMA = {
         "category": {"name": "Books", "image_name": "books.jpg"},
         "product_attributes": {
             "Author": ["John Doe", "Milionare Pirate"],
-            "Publisher": ["Mirumee Press", "Saleor Publishing"],
+            "Publisher": ["FlexBox Press", "FlexBox Publishing"],
             "Language": ["English", "Pirate"],
         },
         "variant_titles": ["Soft", "Hard"],
@@ -461,28 +461,50 @@ def create_fake_address(user_id=None):
 # step16
 def create_roles():
     for permissions, (name, desc) in Permission.PERMISSION_MAP.items():
-        Role.create(name=name, permissions=permissions)
-        yield f"Role {name} created"
+        # Check if role already exists to avoid UNIQUE constraint errors
+        existing_role = Role.query.filter_by(name=name).first()
+        if not existing_role:
+            Role.create(name=name, permissions=permissions)
+            yield f"Role {name} created"
+        else:
+            yield f"Role {name} already exists"
 
 
 # step17
 def create_admin():
-    user = User.create(
-        username="admin", email="admin@163.com", password="admin", is_active=True
-    )
-    create_fake_address(user.id)
-    create_fake_address(user.id)
-    create_fake_address(user.id)
-    UserRole.create(user_id=user.id, role_id=4)
-    yield f"Admin {user.username} created"
-    user = User.create(username="op", email="op@163.com", password="op", is_active=True)
-    UserRole.create(user_id=user.id, role_id=3)
-    yield f"Admin {user.username} created"
-    user = User.create(
-        username="editor", email="editor@163.com", password="editor", is_active=True
-    )
-    UserRole.create(user_id=user.id, role_id=2)
-    yield f"Admin {user.username} created"
+    # Create admin user if not exists
+    admin = User.query.filter_by(username="admin").first()
+    if not admin:
+        admin = User.create(
+            username="admin", email="admin@163.com", password="admin", is_active=True
+        )
+        create_fake_address(admin.id)
+        create_fake_address(admin.id)
+        create_fake_address(admin.id)
+        UserRole.create(user_id=admin.id, role_id=4)
+        yield f"Admin {admin.username} created"
+    else:
+        yield f"Admin {admin.username} already exists"
+    
+    # Create op user if not exists
+    op = User.query.filter_by(username="op").first()
+    if not op:
+        op = User.create(username="op", email="op@163.com", password="op", is_active=True)
+        UserRole.create(user_id=op.id, role_id=3)
+        yield f"Admin {op.username} created"
+    else:
+        yield f"Admin {op.username} already exists"
+    
+    # Create editor user if not exists
+    editor = User.query.filter_by(username="editor").first()
+    if not editor:
+        editor = User.create(
+            username="editor", email="editor@163.com", password="editor", is_active=True
+        )
+        UserRole.create(user_id=editor.id, role_id=2)
+        yield f"Admin {editor.username} created"
+    else:
+        yield f"Admin {editor.username} already exists"
 
 
 """

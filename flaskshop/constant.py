@@ -51,9 +51,9 @@ SiteDefaultSettings = {
         "description": "A short description of the project.",
     },
     "project_copyright": {
-        "value": "© 2026 FlexBox. All rights reserved.",
+        "value": "© 2026 FlexBox by Vishwajeet. All rights reserved. | <a href='https://github.com/vishuchaurasia/flexbox' target='_blank'>GitHub</a>",
         "value_type": SettingValueType.string,
         "name": "Project Copyright",
-        "description": "Copyright notice of the Project like '&copy; 2019 FlaskShop'. ",
+        "description": "Copyright notice of the Project.",
     },
 }
