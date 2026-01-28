@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block page_title %}{% trans %}Unauthorized{% endtrans %}{% endblock %}
+
+{% block content %}
+<div class="fb-error fb-surface fb-surface--shadow fb-section text-center">
+    <h1 class="display-5 fw-bold mb-2">401</h1>
+    <h2 class="h5 fb-page-title mb-2">{% trans %}Unauthorized{% endtrans %}</h2>
+    <p class="fb-muted mb-4">
+        {% trans %}You are not authorized to see this page.{% endtrans %}
+    </p>
+    <div class="d-grid d-sm-flex gap-2 justify-content-center">
+        <a class="btn btn-primary" href="{{ url_for('account.login') }}">
+            {% trans %}Log in{% endtrans %}
+        </a>
+        <a class="btn btn-secondary" href="{{ url_for('account.signup') }}">
+            {% trans %}Create account{% endtrans %}
+        </a>
+    </div>
+</div>
+{% endblock %}
