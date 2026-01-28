@@ -198,5 +198,70 @@ def update_images():
             click.echo(f'✗ Error updating images: {str(e)}', err=True)
             sys.exit(1)
 
+@cli.command()
+@click.option('--dry-run', is_flag=True, help='Show what would be deleted without deleting')
+def cleanup(dry_run):
+    """Clean up unused product images and files."""
+    with app.app_context():
+        import os
+        from pathlib import Path
+        from flaskshop.product.models import ProductImage
+        
+        click.echo('\n🧹 Scanning for unused files...\n')
+        
+        upload_dir = Path('flaskshop/static/upload')
+        if not upload_dir.exists():
+            click.echo('⚠️  Upload directory not found')
+            return
+        
+        # Get all image filenames from database
+        db_images = set()
+        for img in ProductImage.query.all():
+            if img.image:
+                # Extract just the filename from the path
+                filename = Path(img.image).name
+                db_images.add(filename)
+        
+        # Scan upload directory for actual files
+        unused_files = []
+        total_size = 0
+        
+        for file_path in upload_dir.rglob('*'):
+            if file_path.is_file():
+                filename = file_path.name
+                if filename not in db_images:
+                    file_size = file_path.stat().st_size
+                    unused_files.append((file_path, file_size))
+                    total_size += file_size
+        
+        if not unused_files:
+            click.echo('✅ No unused files found!')
+            return
+        
+        click.echo(f'Found {len(unused_files)} unused file(s):')
+        click.echo(f'Total size: {total_size / 1024 / 1024:.2f} MB\n')
+        
+        for file_path, file_size in unused_files:
+            relative_path = file_path.relative_to('flaskshop/static')
+            size_kb = file_size / 1024
+            click.echo(f'  🗑️  {relative_path} ({size_kb:.1f} KB)')
+        
+        if dry_run:
+            click.echo(f'\n[DRY RUN] Would delete {len(unused_files)} file(s)')
+            return
+        
+        if click.confirm(f'\n⚠️  Delete {len(unused_files)} unused file(s)?'):
+            deleted_count = 0
+            for file_path, _ in unused_files:
+                try:
+                    file_path.unlink()
+                    deleted_count += 1
+                except Exception as e:
+                    click.echo(f'✗ Error deleting {file_path}: {str(e)}', err=True)
+            
+            click.echo(f'\n✅ Deleted {deleted_count}/{len(unused_files)} file(s)')
+        else:
+            click.echo('Cancelled.')
+
 if __name__ == '__main__':
     cli()
