@@ -1,11 +1,10 @@
 <div class="product-filters">
-  <div class="product-filters__title">
-    <h2>
-      <strong>{{ object }}</strong>
-    </h2>
-    {% block title_tree %}{% endblock title_tree %}
-  </div>
+  <h2 style="font-size: 16px; font-weight: 700; margin: 0 0 20px 0; color: #333;">
+    Filters
+  </h2>
+  {% block title_tree %}{% endblock title_tree %}
 </div>
+
 <div class="filters-menu__body d-none d-md-block">
   <div class="product-filters">
     <div class="product-filters__attributes" data-icon-up="{{ url_for('static', filename='img/chevron-up.svg') }}"
@@ -13,26 +12,24 @@
       <form method="get">
         {% for attr in attr_filter %}
 
-        <div class="filter-section" aria-expanded="true">
-          <div class="filter-section__header">
-            <h3>{{ attr }}</h3>
-            <div class="filter-section__icon">
-              <img class="lazyload lazypreload" data-src="{{ url_for('static', filename='img/chevron-up.svg') }}">
-            </div>
+        <div class="filter-section" aria-expanded="true" style="border-bottom: 1px solid #f0f0f0; padding-bottom: 16px; margin-bottom: 16px;">
+          <div class="filter-section__header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 style="font-size: 13px; font-weight: 600; margin: 0; color: #333;">{{ attr }}</h3>
+            <div class="filter-section__icon" style="font-size: 12px; color: #666;">▼</div>
           </div>
           <div class="filter-section__content">
             <div class="filter-form-field">
-              <ul>
+              <ul style="list-style: none; padding: 0; margin: 0;">
                 {% for value in attr.values %}
-                <li>
-                  <label for="{{ attr.title + loop.index|string }}">
+                <li style="margin-bottom: 10px;">
+                  <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 13px; color: #666;">
                     {% if attr.title in default_attr and default_attr[attr.title] == value.id %}
                     <input type="radio" name="{{ attr }}" value="{{ value.id }}" id="{{ attr.title + loop.index|string }}"
-                      checked>
+                      checked style="cursor: pointer;">
                     {% else %}
-                    <input type="radio" name="{{ attr }}" value="{{ value.id }}" id="{{ attr.title + loop.index|string }}">
+                    <input type="radio" name="{{ attr }}" value="{{ value.id }}" id="{{ attr.title + loop.index|string }}" style="cursor: pointer;">
                     {% endif %}
-                    {{ value }}
+                    <span>{{ value }}</span>
                   </label>
                 </li>
                 {% endfor %}
@@ -43,29 +40,32 @@
 
         {% endfor %}
 
-
-        <div class="filter-section" aria-expanded="true">
-          <div class="filter-section__header">
-            <h3>{% trans %}Price{% endtrans %}</h3>
-            <div class="filter-section__icon">
-              <img class="lazyload lazypreload" data-src="{{ url_for('static', filename='img/chevron-up.svg') }}">
-            </div>
+        <div class="filter-section" style="border-bottom: 1px solid #f0f0f0; padding-bottom: 16px; margin-bottom: 16px;">
+          <div class="filter-section__header" style="cursor: pointer; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 style="font-size: 13px; font-weight: 600; margin: 0; color: #333;">Price Range</h3>
+            <div class="filter-section__icon" style="font-size: 12px; color: #666;">▼</div>
           </div>
           <div class="filter-section__content">
-            <div class="filter-form-field price-field">
-              <input id="price_from" name="price_from" value="{{ price_from }}" type="number" min="0" class="form-control d-inline"
-                placeholder="from" /><span>-</span><input id="price_to" name="price_to" value="{{ price_to }}" type="number"
-                min="0" class="form-control d-inline" placeholder="to" />
+            <div class="filter-form-field price-field" style="display: flex; gap: 8px; align-items: center;">
+              <input id="price_from" name="price_from" value="{{ price_from }}" type="number" min="0" class="form-control"
+                placeholder="From" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;" />
+              <span style="color: #666;">-</span>
+              <input id="price_to" name="price_to" value="{{ price_to }}" type="number"
+                min="0" class="form-control" placeholder="To" style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;" />
             </div>
           </div>
         </div>
-        {% if clear_filter %}
-        <a href="{{ object.get_absolute_url() }}">
-          <span class="clear-filters text-uppercase">{% trans %}Clear filters{% endtrans %}</span>
-        </a>
-        {% endif %}
 
-        <button class="btn btn-primary" type="submit">{% trans %}Update{% endtrans %}</button>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <button class="btn btn-primary" type="submit" style="background: #2874f0; color: white; padding: 10px 16px; border: none; border-radius: 4px; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%;">
+            Apply Filters
+          </button>
+          {% if clear_filter %}
+          <a href="{{ object.get_absolute_url() }}" style="text-align: center; color: #2874f0; text-decoration: none; font-size: 12px; padding: 8px; border-radius: 4px; border: 1px solid #2874f0;" onmouseover="this.style.backgroundColor='#f0f5ff'" onmouseout="this.style.backgroundColor='transparent'">
+            Clear Filters
+          </a>
+          {% endif %}
+        </div>
       </form>
     </div>
   </div>

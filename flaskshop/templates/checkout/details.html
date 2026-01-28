@@ -42,7 +42,7 @@
         </div>
         <div class="col-4">
           <p class="float-right">
-            ${{ line.subtotal }}
+            ₹{{ line.subtotal }}
           </p>
         </div>
       </div>
@@ -54,7 +54,7 @@
         </div>
         <div class="col-4">
           <p class="float-right">
-            ${{ current_user_cart.subtotal }}
+            ₹{{ current_user_cart.subtotal }}
           </p>
         </div>
       </div>
@@ -65,7 +65,7 @@
         <div class="col-4">
           <p class="float-right">
             {% if current_user_cart.shipping_method %}
-            ${{current_user_cart.shipping_method_price }}
+            ₹{{current_user_cart.shipping_method_price }}
             {% else %}
             &mdash;
             {% endif %}
@@ -85,7 +85,7 @@
             </button>
           </form>
           <div class="float-right">
-            -${{current_user_cart.discount_amount}}
+            -₹{{current_user_cart.discount_amount}}
           </div>
           {% else %}
 
@@ -105,7 +105,7 @@
           <h3>{% trans %}Total{% endtrans %}</h3>
         </div>
         <div class="col-4">
-          <h3 class="float-right">${{ current_user_cart.total }}</h3>
+          <h3 class="float-right">₹{{ current_user_cart.total }}</h3>
         </div>
       </div>
       </div>

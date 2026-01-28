@@ -70,9 +70,9 @@
       <div style="background: #f5f5f5; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
         <div style="font-size: 12px; color: #999; margin-bottom: 5px;">Price</div>
         <div style="display: flex; align-items: center; gap: 15px;">
-          <span style="font-size: 32px; font-weight: bold; color: #2874f0;">${{ "%.2f"|format(product.price) }}</span>
+          <span style="font-size: 32px; font-weight: bold; color: #2874f0;">₹{{ "%.2f"|format(product.price) }}</span>
           {% if product.is_discounted %}
-            <span style="text-decoration: line-through; color: #999;">${{ "%.2f"|format(product.basic_price) }}</span>
+            <span style="text-decoration: line-through; color: #999;">₹{{ "%.2f"|format(product.basic_price) }}</span>
             <span style="background: #e74c3c; color: white; padding: 4px 10px; border-radius: 4px; font-weight: bold; font-size: 14px;">
               {{ ((product.basic_price - product.price) / product.basic_price * 100)|int }}% OFF
             </span>
@@ -89,7 +89,7 @@
           <label style="display: block; margin-bottom: 10px; font-weight: 600; color: #333;">{{ form.variant.label.text|safe }}</label>
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             {% for item in form.variant %}
-            <input type="radio" id="{{ item.id }}" name="variant" value="{{ item.data }}" required style="display: none;">
+            <input type="radio" id="{{ item.id }}" name="variant" value="{{ item.data }}" required style="display: none;"{% if loop.first %} checked{% endif %}>
             <label for="{{ item.id }}" style="border: 2px solid #ddd; padding: 8px 16px; border-radius: 4px; cursor: pointer; display: inline-block; transition: all 0.3s;">
               {{ item.label.text|safe }}
             </label>
@@ -109,9 +109,14 @@
           </div>
         </div>
 
-        <button type="submit" style="width: 100%; padding: 15px; background: #2874f0; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s;">
-          🛒 Add to Cart
-        </button>
+        <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+          <button type="submit" style="flex: 1; padding: 15px; background: #2874f0; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s;">
+            🛒 Add to Cart
+          </button>
+          <button type="button" onclick="buyNow()" style="flex: 1; padding: 15px; background: #ff6b35; color: white; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s;">
+            ⚡ Buy Now
+          </button>
+        </div>
       </form>
       {% else %}
       <div style="background: #fff3cd; border: 1px solid #ffb84d; padding: 15px; border-radius: 6px; color: #856404;">
@@ -160,17 +165,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Variant selection styling
   const variantInputs = document.querySelectorAll('input[name="variant"]');
-  variantInputs.forEach(input => {
-    input.addEventListener('change', function() {
-      document.querySelectorAll('label[for*="variant"]').forEach(l => {
-        l.style.borderColor = '#ddd';
-        l.style.background = 'white';
-      });
-      document.querySelector(`label[for="${this.id}"]`).style.borderColor = '#2874f0';
-      document.querySelector(`label[for="${this.id}"]`).style.background = '#f0f7ff';
+  
+  function updateVariantStyling() {
+    document.querySelectorAll('label[for*="variant"]').forEach(l => {
+      l.style.borderColor = '#ddd';
+      l.style.background = 'white';
     });
+    const checkedInput = document.querySelector('input[name="variant"]:checked');
+    if (checkedInput) {
+      document.querySelector(`label[for="${checkedInput.id}"]`).style.borderColor = '#2874f0';
+      document.querySelector(`label[for="${checkedInput.id}"]`).style.background = '#f0f7ff';
+    }
+  }
+  
+  variantInputs.forEach(input => {
+    input.addEventListener('change', updateVariantStyling);
   });
+  
+  // Set initial styling for the default selected variant
+  updateVariantStyling();
 });
+
+function buyNow() {
+  // Submit the form and redirect to checkout
+  const form = document.getElementById('product-form');
+  const formData = new FormData(form);
+  
+  // Add a hidden field to indicate buy now action
+  const buyNowInput = document.createElement('input');
+  buyNowInput.type = 'hidden';
+  buyNowInput.name = 'buy_now';
+  buyNowInput.value = '1';
+  form.appendChild(buyNowInput);
+  
+  // Submit the form
+  form.submit();
+}
 </script>
 
 {% endblock content %}

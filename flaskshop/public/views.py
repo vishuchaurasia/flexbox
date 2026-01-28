@@ -54,6 +54,17 @@ def show_page(identity):
     return render_template("public/page.html", page=page)
 
 
+def about():
+    return render_template("public/about.html")
+
+
+def legal(page="privacy"):
+    """Display legal pages (privacy policy, terms of service)."""
+    if page not in ["privacy", "terms"]:
+        page = "privacy"
+    return render_template("public/legal.html", page=page)
+
+
 @impl
 def flaskshop_load_blueprints(app):
     bp = Blueprint("public", __name__)
@@ -61,5 +72,7 @@ def flaskshop_load_blueprints(app):
     bp.add_url_rule("/style", view_func=style)
     bp.add_url_rule("/favicon.ico", view_func=favicon)
     bp.add_url_rule("/search", view_func=search)
+    bp.add_url_rule("/about", view_func=about)
+    bp.add_url_rule("/legal/<page>", view_func=legal)
     bp.add_url_rule("/page/<identity>", view_func=show_page)
     app.register_blueprint(bp)

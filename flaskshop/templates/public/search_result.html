@@ -7,7 +7,7 @@
 <div class="row home__featured">
   <div class="col-12">
     {% if query and pagination.items %}
-    <div class="row">
+    <div class="row" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
       {% include "products/_items.html" %}
     </div>
     <div class="row">

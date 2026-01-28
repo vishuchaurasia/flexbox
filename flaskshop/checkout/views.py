@@ -36,8 +36,8 @@ def update_cartline(id):
     cart = Cart.query.filter(Cart.user_id == current_user.id).first()
     response["cart"]["numItems"] = cart.update_quantity()
     response["cart"]["numLines"] = len(cart)
-    response["subtotal"] = "$" + str(line.subtotal)
-    response["total"] = "$" + str(cart.total)
+    response["subtotal"] = "₹" + str(line.subtotal)
+    response["total"] = "₹" + str(cart.total)
     return jsonify(response)
 
 

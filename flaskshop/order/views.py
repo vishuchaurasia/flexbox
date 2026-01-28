@@ -4,6 +4,7 @@ from datetime import datetime
 from flask import (
     Blueprint,
     abort,
+    jsonify,
     redirect,
     render_template,
     request,
@@ -16,7 +17,6 @@ from pluggy import HookimplMarker
 
 from flaskshop.constant import OrderStatusKinds, PaymentStatusKinds, ShipStatusKinds
 from flaskshop.extensions import csrf_protect
-from .payment import zhifubao
 
 from .models import Order, OrderPayment
 
@@ -58,29 +58,12 @@ def create_payment(token, payment_method):
             total=order.total,
             customer_ip_address=customer_ip_address,
         )
-    if payment_method == "alipay":
-        redirect_url = zhifubao.send_order(order.token, payment_no, order.total)
-        payment.redirect_url = redirect_url
+    if payment_method in ["upi", "gpay", "card"]:
+        # For demo purposes, simulate successful payment
+        payment.status = PaymentStatusKinds.confirmed.value
+        payment.paid_at = datetime.now()
+        order.pay_success(payment=payment)
     return payment
-
-
-@login_required
-def ali_pay(token):
-    payment = create_payment(token, "alipay")
-    return redirect(payment.redirect_url)
-
-
-@csrf_protect.exempt
-def ali_notify():
-    data = request.form.to_dict()
-    success = zhifubao.verify_order(data)
-    if success:
-        order_payment = OrderPayment.query.filter_by(
-            payment_no=data["out_trade_no"]
-        ).first()
-        order_payment.pay_success(paid_at=data["gmt_payment"])
-        return "SUCCESS"
-    return "ERROR HAPPEND"
 
 
 @login_required
@@ -125,14 +108,60 @@ def receive(token):
     return render_template("orders/details.html", order=order)
 
 
+@login_required
+def upi_pay(token):
+    create_payment(token, "upi")
+    return redirect(url_for("order.payment_success"))
+
+
+@login_required
+def gpay_pay(token):
+    create_payment(token, "gpay")
+    return redirect(url_for("order.payment_success"))
+
+
+@login_required
+def card_pay(token):
+    create_payment(token, "card")
+    return redirect(url_for("order.payment_success"))
+
+
+@login_required
+def just_pay(token):
+    order = Order.query.filter_by(token=token).first()
+    if not order.is_self_order:
+        abort(403, "This is not your order!")
+    if order.status != OrderStatusKinds.unfulfilled.value:
+        return jsonify({"success": False, "message": "Order cannot be paid"})
+    
+    # Auto-complete payment
+    payment = OrderPayment.query.filter_by(order_id=order.id).first()
+    if payment:
+        payment.pay_success(datetime.now())
+    else:
+        # Create payment record if it doesn't exist
+        payment = OrderPayment.create(
+            order_id=order.id,
+            total=order.total_net,
+            payment_method="justpay",
+            status=PaymentStatusKinds.confirmed.value,
+            paid_at=datetime.now()
+        )
+        order.pay_success(payment=payment)
+    
+    return jsonify({"success": True, "message": "Payment completed"})
+
+
 @impl
 def flaskshop_load_blueprints(app):
     bp = Blueprint("order", __name__)
     bp.add_url_rule("/", view_func=index)
     bp.add_url_rule("/<string:token>", view_func=show)
-    bp.add_url_rule("/pay/<string:token>/alipay", view_func=ali_pay)
-    bp.add_url_rule("/alipay/notify", view_func=ali_notify, methods=["POST", "HEAD"])
     bp.add_url_rule("/pay/<string:token>/testpay", view_func=test_pay_flow)
+    bp.add_url_rule("/pay/<string:token>/upi", view_func=upi_pay)
+    bp.add_url_rule("/pay/<string:token>/gpay", view_func=gpay_pay)
+    bp.add_url_rule("/pay/<string:token>/card", view_func=card_pay)
+    bp.add_url_rule("/pay/<string:token>/justpay", view_func=just_pay, methods=["POST"])
     bp.add_url_rule("/payment_success", view_func=payment_success)
     bp.add_url_rule("/cancel/<string:token>", view_func=cancel_order)
     bp.add_url_rule("/receive/<string:token>", view_func=receive)

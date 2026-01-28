@@ -27,6 +27,11 @@ def product_add_to_cart(id):
 
     if form.validate_on_submit():
         Cart.add_to_currentuser_cart(form.quantity.data, form.variant.data)
+        
+        # Check if this is a "buy now" request
+        if request.form.get('buy_now') == '1':
+            return redirect(url_for("checkout.checkout_note"))
+    
     return redirect(url_for("product.show", id=id))
 
 

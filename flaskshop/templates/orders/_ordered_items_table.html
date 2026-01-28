@@ -72,7 +72,7 @@
         </div>
         <div class="col-4">
             <p class="float-right">
-                ${{ order.shipping_price_net }}
+                ₹{{ order.shipping_price_net }}
             </p>
         </div>
     </div>
@@ -120,17 +120,72 @@
             {% endif %}
         </div>
         {% if order.status_human == "unfulfilled" %}
-        <div class="col-6">
-            <span class="float-right">{% trans %}Please pay before 00:30, else the order will auto closed{% endtrans %}</span>
-            <a href="{{ url_for('order.ali_pay', token=order.token) }}" class="btn btn-primary float-right">
-                {% trans %}Alipay{% endtrans %}
-            </a>
-            <a href="{{ url_for('order.test_pay', token=order.token) }}" class="btn secondary float-right">
-                {% trans %}Pay for test{% endtrans %}
-            </a>
-            <a href="{{ url_for('order.cancel_order', token=order.token) }}" class="btn danger float-right">
-                {% trans %}Cancel Order{% endtrans %}
-            </a>
+        <div class="col-12" style="margin-top: 30px;">
+            <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 25px; margin-bottom: 20px;">
+                <h4 style="color: #dc3545; margin-bottom: 15px; font-weight: 600;">
+                    ⏰ {% trans %}Payment Required{% endtrans %}
+                </h4>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <p style="color: #6c757d; margin: 0; font-size: 14px;">
+                        {% trans %}Complete your payment within:{% endtrans %}
+                    </p>
+                    <div id="countdown-timer" style="background: #dc3545; color: white; padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 16px;">
+                        05:00
+                    </div>
+                </div>
+                
+                <div style="background: white; border-radius: 8px; padding: 20px; border: 1px solid #dee2e6;">
+                    <h5 style="margin-bottom: 20px; color: #495057; font-weight: 600;">
+                        💰 {% trans %}Choose Payment Method{% endtrans %}
+                    </h5>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                        <a href="{{ url_for('order.upi_pay', token=order.token) }}" 
+                           class="payment-option" 
+                           style="display: block; text-decoration: none; background: linear-gradient(135deg, #2874f0, #1e5bb8); color: white; padding: 15px; border-radius: 8px; text-align: center; transition: all 0.3s; border: none;">
+                            <div style="font-size: 24px; margin-bottom: 8px;">💳</div>
+                            <div style="font-weight: 600; font-size: 16px;">UPI</div>
+                            <div style="font-size: 12px; opacity: 0.9;">Paytm, PhonePe, GPay</div>
+                        </a>
+                        
+                        <a href="{{ url_for('order.gpay_pay', token=order.token) }}" 
+                           class="payment-option"
+                           style="display: block; text-decoration: none; background: linear-gradient(135deg, #4285f4, #3367d6); color: white; padding: 15px; border-radius: 8px; text-align: center; transition: all 0.3s; border: none;">
+                            <div style="font-size: 24px; margin-bottom: 8px;">🟦</div>
+                            <div style="font-weight: 600; font-size: 16px;">Google Pay</div>
+                            <div style="font-size: 12px; opacity: 0.9;">Fast & Secure</div>
+                        </a>
+                        
+                        <a href="{{ url_for('order.card_pay', token=order.token) }}" 
+                           class="payment-option"
+                           style="display: block; text-decoration: none; background: linear-gradient(135deg, #ff6b35, #e55a2b); color: white; padding: 15px; border-radius: 8px; text-align: center; transition: all 0.3s; border: none;">
+                            <div style="font-size: 24px; margin-bottom: 8px;">💳</div>
+                            <div style="font-weight: 600; font-size: 16px;">Card/Phone Pay</div>
+                            <div style="font-size: 12px; opacity: 0.9;">Credit/Debit Cards</div>
+                        </a>
+                        
+                        <button onclick="autoCompletePayment('{{ order.token }}')" 
+                                class="payment-option"
+                                style="background: linear-gradient(135deg, #28a745, #1e7e34); color: white; padding: 15px; border-radius: 8px; text-align: center; transition: all 0.3s; border: none; cursor: pointer; width: 100%;">
+                            <div style="font-size: 24px; margin-bottom: 8px;">✅</div>
+                            <div style="font-weight: 600; font-size: 16px;">JUST PAY</div>
+                            <div style="font-size: 12px; opacity: 0.9;">Instant Payment</div>
+                        </button>
+                    </div>
+                    
+                    <div style="text-align: center; padding-top: 15px; border-top: 1px solid #dee2e6;">
+                        <a href="{{ url_for('order.test_pay_flow', token=order.token) }}" 
+                           class="btn btn-outline-secondary btn-sm"
+                           style="margin-right: 10px;">
+                            🧪 {% trans %}Test Payment{% endtrans %}
+                        </a>
+                        <a href="{{ url_for('order.cancel_order', token=order.token) }}" 
+                           class="btn btn-outline-danger btn-sm">
+                            ❌ {% trans %}Cancel Order{% endtrans %}
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
         {% elif order.status_human == "shipped" %}
         <div class="col-6">
@@ -142,3 +197,105 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+function autoCompletePayment(token) {
+    if (confirm('Are you sure you want to complete this payment?')) {
+        fetch(`/orders/pay/${token}/justpay`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Payment completed successfully!');
+                location.reload();
+            } else {
+                alert('Payment failed: ' + data.message);
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+        });
+    }
+}
+
+// Countdown timer functionality
+function startCountdown() {
+    const timerElement = document.getElementById('countdown-timer');
+    if (!timerElement) return;
+
+    // Get order creation time (assuming it's available in the template)
+    // For demo purposes, we'll set a 30-minute countdown from page load
+    // In a real app, you'd get this from the server
+    const now = new Date();
+    const deadline = new Date(now.getTime() + (30 * 60 * 1000)); // 30 minutes from now
+
+    function updateTimer() {
+        const now = new Date();
+        const timeLeft = deadline - now;
+
+        if (timeLeft <= 0) {
+            timerElement.textContent = 'EXPIRED';
+            timerElement.style.background = '#6c757d';
+            // Optionally redirect to home or show expired message
+            setTimeout(() => {
+                if (confirm('Payment time has expired. Would you like to go back to home?')) {
+                    window.location.href = '/';
+                }
+            }, 1000);
+            return;
+        }
+
+        const hours = Math.floor(timeLeft / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+        timerElement.textContent = 
+            String(hours).padStart(2, '0') + ':' + 
+            String(minutes).padStart(2, '0') + ':' + 
+            String(seconds).padStart(2, '0');
+
+        // Change color when less than 5 minutes
+        if (minutes < 5) {
+            timerElement.style.background = '#fd7e14';
+        }
+        // Change color when less than 1 minute
+        if (minutes < 1) {
+            timerElement.style.background = '#dc3545';
+            timerElement.style.animation = 'pulse 1s infinite';
+        }
+    }
+
+    updateTimer();
+    setInterval(updateTimer, 1000);
+}
+
+// Add hover effects for payment options
+document.addEventListener('DOMContentLoaded', function() {
+    const paymentOptions = document.querySelectorAll('.payment-option');
+    paymentOptions.forEach(option => {
+        option.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-2px)';
+            this.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+        });
+        option.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'none';
+        });
+    });
+
+    // Start the countdown timer
+    startCountdown();
+});
+</script>
+
+<style>
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+</style>
