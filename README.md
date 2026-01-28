@@ -57,104 +57,6 @@ A modern, feature-rich e-commerce platform built with Flask and modern web techn
 - **SQLite** (development) - Lightweight database for local development
 - **MySQL** (production) - Scalable relational database
 
-## 📁 Project Structure
-
-```
-FlexBook/
-├── app.py                      # Application entry point
-├── requirements.txt            # Python dependencies
-├── README.md                   # This file
-├── flaskshop/                  # Main application package
-│   ├── __init__.py            # Package initialization
-│   ├── app.py                 # Flask app factory
-│   ├── settings.py            # Configuration settings
-│   ├── database.py            # Database setup
-│   ├── extensions.py          # Flask extensions (SQLAlchemy, etc.)
-│   ├── commands.py            # CLI commands
-│   ├── constant.py            # Application constants
-│   ├── utils.py               # Utility functions
-│   ├── random_data.py         # Demo data generator
-│   │
-│   ├── account/               # User authentication & profile
-│   │   ├── models.py          # User, Address models
-│   │   ├── views.py           # Auth routes
-│   │   ├── forms.py           # Login/signup forms
-│   │   └── utils.py           # Auth utilities
-│   │
-│   ├── product/               # Product management
-│   │   ├── models.py          # Product, Category, Collection models
-│   │   ├── views.py           # Product listing routes
-│   │   ├── forms.py           # Product forms
-│   │
-│   ├── checkout/              # Shopping cart & checkout
-│   │   ├── models.py          # Cart, CartItem models
-│   │   ├── views.py           # Checkout routes
-│   │   └── forms.py           # Checkout forms
-│   │
-│   ├── order/                 # Order management
-│   │   ├── models.py          # Order, OrderItem models
-│   │   ├── views.py           # Order routes
-│   │   └── payment/           # Payment gateway integration
-│   │       └── zhifubao.py    # Alipay integration
-│   │
-│   ├── discount/              # Discount & coupon system
-│   │   ├── models.py          # Discount model
-│   │   └── views.py           # Discount routes
-│   │
-│   ├── dashboard/             # Admin dashboard
-│   │   ├── models.py          # Dashboard models
-│   │   ├── forms.py           # Admin forms
-│   │   ├── utils.py           # Dashboard utilities
-│   │   └── views/             # Dashboard routes
-│   │       ├── index.py       # Dashboard home
-│   │       ├── product.py     # Product management
-│   │       ├── order.py       # Order management
-│   │       ├── user.py        # User management
-│   │       ├── discount.py    # Discount management
-│   │       └── site.py        # Site configuration
-│   │
-│   ├── public/                # Public pages
-│   │   ├── models.py          # Page models
-│   │   ├── views.py           # Public routes
-│   │   └── search.py          # Search functionality
-│   │
-│   ├── plugin/                # Plugin system
-│   │   ├── manager.py         # Plugin manager
-│   │   ├── models.py          # Plugin model
-│   │   ├── spec.py            # Plugin specification
-│   │   └── utils.py           # Plugin utilities
-│   │
-│   ├── corelib/               # Core utilities
-│   │   ├── db.py              # Database utilities
-│   │   ├── mc.py              # Cache management
-│   │   ├── local_cache.py     # Local caching
-│   │   └── utils.py           # General utilities
-│   │
-│   ├── static/                # Static assets
-│   │   ├── build/             # Webpack compiled output
-│   │   ├── img/               # Images and SVGs
-│   │   ├── dashboard/         # Dashboard assets
-│   │   └── placeholders/      # Product placeholder images
-│   │
-│   └── templates/             # Jinja2 templates
-│       ├── base.html          # Base template
-│       ├── account/           # Auth templates
-│       ├── checkout/          # Checkout templates
-│       ├── dashboard/         # Admin templates
-│       ├── products/          # Product templates
-│       ├── orders/            # Order templates
-│       └── errors/            # Error pages
-│
-├── instance/                   # Instance folder
-│   └── flaskshop.db           # SQLite database (development)
-│
-├── translations/              # i18n translations
-│   ├── babel.cfg              # Babel configuration
-│   └── bg_BG/                 # Bulgarian translations
-│
-└── .venv/                     # Python virtual environment
-```
-
 ## 📋 Prerequisites
 
 Before you begin, ensure you have the following installed on your system:
@@ -189,20 +91,6 @@ python -m pip install --upgrade pip setuptools wheel
 # Install project dependencies
 pip install --no-compile -r requirements.txt
 ```
-
-### 3. Frontend Setup (Windows PowerShell)
-
-Build the frontend assets:
-
-```powershell
-cd frontend
-npm ci
-npm run build
-cd ..
-```
-
-This generates optimized assets in `flaskshop/static/build/` for Flask to serve.
-
 ## ⚙️ Configuration
 
 ### Database Configuration
@@ -302,14 +190,6 @@ black flaskshop/
 flake8 flaskshop/
 ```
 
-### Frontend Development
-
-```powershell
-cd frontend
-npm run watch   # Watch for file changes
-npm run build   # Production build
-cd ..
-```
 
 ## 📦 Project Management Features
 
