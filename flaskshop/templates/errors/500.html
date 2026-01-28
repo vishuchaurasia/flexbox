@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block page_title %}{% trans %}Server error{% endtrans %}{% endblock %}
+
+{% block content %}
+<div class="fb-error fb-surface fb-surface--shadow fb-section text-center">
+    <h1 class="display-5 fw-bold mb-2">500</h1>
+    <h2 class="h5 fb-page-title mb-2">{% trans %}Server error{% endtrans %}</h2>
+    <p class="fb-muted mb-4">{% trans %}Sorry, something went wrong on our system. Please try again later.{% endtrans %}</p>
+    <a class="btn btn-secondary" href="{{ url_for('public.home') }}">
+        {% trans %}Back to home{% endtrans %}
+    </a>
+</div>
+{% endblock %}

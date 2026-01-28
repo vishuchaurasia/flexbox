@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div style="background: linear-gradient(135deg, #2874f0 0%, #1f5fd1 100%); color: white; padding: 40px 20px; border-radius: 8px; margin-bottom: 30px;">
+  <div style="max-width: 1200px; margin: 0 auto;">
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;">
+      <div>
+        <h1 style="font-size: 36px; font-weight: 700; margin-bottom: 20px; line-height: 1.2;">
+          Welcome to FlexBox
+        </h1>
+        <p style="font-size: 16px; margin-bottom: 30px; opacity: 0.95; line-height: 1.6;">
+          Discover amazing products across Electronics, Fashion, Home & more. Shop with confidence with our curated collection and unbeatable prices.
+        </p>
+        <div style="display: flex; gap: 15px;">
+          <a href="{{ url_for('public.home') }}#featured" style="background: #ff9f00; color: black; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-block; transition: all 0.3s;">
+            🛍️ Shop Now
+          </a>
+          <a href="{{ url_for('public.home') }}#categories" style="background: rgba(255,255,255,0.2); color: white; padding: 12px 30px; border-radius: 6px; text-decoration: none; font-weight: 600; display: inline-block; transition: all 0.3s;">
+            📂 Browse Categories
+          </a>
+        </div>
+      </div>
+      <div style="background: white; padding: 25px; border-radius: 8px;">
+        <h2 style="font-size: 16px; font-weight: 600; margin-bottom: 15px; color: #333;">
+          🔍 Quick Search
+        </h2>
+        <form action="/search" style="display: flex; flex-direction: column; gap: 12px;">
+          <input type="text" name="q" placeholder="Search for products..." 
+                 style="padding: 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px;" required>
+          <button type="submit" style="background: #2874f0; color: white; padding: 12px; border: none; border-radius: 4px; font-weight: 600; cursor: pointer;">
+            Search
+          </button>
+        </form>
+        <div style="color: #999; font-size: 12px; margin-top: 12px;">
+          Popular: Electronics • Fashion • Books • Home
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="max-width: 1200px; margin: 0 auto;">
+  <div id="categories" style="margin-bottom: 50px;">
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px;">
+      <h2 style="font-size: 22px; font-weight: 700; margin: 0; color: #333;">
+        📂 Shop by Category
+      </h2>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px;">
+      {% for item in top_menu[:8] %}
+        <a href="{{ item.url }}" style="background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%); padding: 20px; border-radius: 8px; text-decoration: none; text-align: center; transition: all 0.3s; border: 2px solid transparent; display: flex; flex-direction: column; align-items: center; gap: 10px; color: #333; font-weight: 600;">
+          <span style="font-size: 32px;">{% if 'elec' in item.title.lower() %}💻{% elif 'fashion' in item.title.lower() or 'cloth' in item.title.lower() %}👗{% elif 'book' in item.title.lower() %}📚{% elif 'home' in item.title.lower() %}🏠{% elif 'toy' in item.title.lower() %}🎮{% elif 'food' in item.title.lower() or 'drink' in item.title.lower() %}🍔{% elif 'sport' in item.title.lower() %}⚽{% elif 'beauty' in item.title.lower() %}💄{% elif 'garden' in item.title.lower() %}🌿{% elif 'auto' in item.title.lower() %}🚗{% else %}🛍️{% endif %}</span>
+          <span style="font-size: 13px; word-break: break-word;">{{ item.title }}</span>
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if products %}
+    <div id="featured" style="margin-bottom: 50px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px;">
+        <h2 style="font-size: 22px; font-weight: 700; margin: 0; color: #333;">
+          ⭐ Featured Products
+        </h2>
+        <a href="{{ url_for('public.search') }}?q=" style="color: #2874f0; text-decoration: none; font-weight: 600; font-size: 14px;">View all →</a>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
+        {% include('products/_items.html') %}
+      </div>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
