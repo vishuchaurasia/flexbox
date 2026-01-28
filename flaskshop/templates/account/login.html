@@ -1,0 +1,43 @@
+{% extends "no_nav_base.html" %}
+
+{% block title %}{% trans %}Log in{% endtrans %}{% endblock %}
+
+{% block content %}
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+      <div class="login fb-surface fb-surface--shadow">
+        <div class="row g-0">
+          <div class="col-md-6 d-none d-md-block p-4">
+            <div class="login__register-link">
+              <h2 class="h4 fb-page-title mb-2">{% trans %}New here?{% endtrans %}</h2>
+              <p class="fb-muted mb-3">{% trans %}Create an account to track orders and save addresses.{% endtrans %}</p>
+              <img class="lazyload lazypreload"
+                   data-src="{{ url_for('static', filename='placeholders/flexbox/hero.svg') }}">
+              <div class="mt-3">
+                <a rel="nofollow" href="{{ url_for('account.signup') }}" class="btn btn-secondary">
+                  {% trans %}Create account{% endtrans %}
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-6 p-4 p-lg-5">
+            {% if not reset %}
+              <h1 class="h4 fb-page-title mb-1">{% trans %}Welcome back{% endtrans %}</h1>
+              <p class="fb-muted mb-3">{% trans %}Log in to continue.{% endtrans %}</p>
+            {% else %}
+              <h1 class="h4 fb-page-title mb-1">{% trans %}Reset password{% endtrans %}</h1>
+              <p class="fb-muted mb-3">{% trans %}Enter your email/username to reset your password.{% endtrans %}</p>
+            {% endif %}
+            {% include "account/partials/login_form.html" %}
+            <div class="d-md-none mt-3 fb-divider pt-3">
+              <p class="fb-muted mb-2">{% trans %}Don't have an account yet?{% endtrans %}</p>
+              <a rel="nofollow" href="{{ url_for('account.signup') }}" class="btn btn-secondary w-100">
+                {% trans %}Create account{% endtrans %}
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

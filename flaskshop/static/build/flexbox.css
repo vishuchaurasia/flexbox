@@ -1,0 +1,295 @@
+/* FlexBox storefront theme (Flipkart-like layout/colors).
+   Loaded AFTER build/storefront.css.
+*/
+
+:root {
+  --fb-blue: #2874f0;
+  --fb-blue-dark: #1f5fd1;
+  --fb-yellow: #ff9f00;
+  --fb-bg: #f1f3f6;
+  --fb-text: #172337;
+  --fb-muted: rgba(23, 35, 55, 0.72);
+  --fb-border: rgba(0, 0, 0, 0.08);
+  --fb-card: #ffffff;
+  --fb-shadow: 0 1px 2px rgba(0, 0, 0, 0.10);
+  --fb-shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.12);
+}
+
+body {
+  background: var(--fb-bg);
+  color: var(--fb-text);
+}
+
+.maincontent {
+  padding-top: 1rem;
+  padding-bottom: 2.25rem;
+}
+
+/* ---------- Header (reuse existing markup) ---------- */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  background: var(--fb-blue);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.navbar__login {
+  background: var(--fb-blue);
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.navbar__login a {
+  color: rgba(255, 255, 255, 0.92);
+  text-decoration: none;
+}
+
+.navbar__login a:hover {
+  color: #fff;
+}
+
+.navbar__brand {
+  background: var(--fb-blue);
+}
+
+.navbar__logo a svg,
+.footer__logo svg {
+  /* make inline-svg logos pop on blue bg */
+  filter: drop-shadow(0 1px 0 rgba(0,0,0,0.12));
+}
+
+/* Search bar */
+.navbar__search .search-form {
+  width: 100%;
+}
+
+.navbar__search .search-form .form-control {
+  border-radius: 2px;
+  border: none;
+  background: #fff;
+  height: 40px;
+  padding-left: 14px;
+  box-shadow: var(--fb-shadow);
+}
+
+.navbar__search .search-form .btn {
+  height: 40px;
+  border-radius: 2px;
+  border: none;
+  background: var(--fb-yellow);
+  color: #111;
+  font-weight: 700;
+  box-shadow: var(--fb-shadow);
+}
+
+.navbar__search .search-form .btn:hover {
+  background: #ffb11f;
+}
+
+/* Cart badge */
+.navbar__brand__cart .badge {
+  background: var(--fb-yellow);
+  color: #111;
+  font-weight: 800;
+}
+
+/* Category bar */
+.navbar__menu {
+  background: #fff;
+  border-top: 1px solid var(--fb-border);
+  border-bottom: 1px solid var(--fb-border);
+}
+
+.navigation .menu.nav {
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  white-space: nowrap;
+  gap: 0.25rem;
+  padding: 0.25rem 0;
+}
+
+.navigation .menu.nav::-webkit-scrollbar {
+  height: 6px;
+}
+
+.navigation .menu.nav::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.18);
+  border-radius: 999px;
+}
+
+.navigation .nav-link {
+  color: var(--fb-text);
+  font-weight: 600;
+  padding: 0.55rem 0.75rem;
+  border-radius: 999px;
+}
+
+.navigation .nav-link:hover {
+  background: rgba(40, 116, 240, 0.08);
+  color: var(--fb-blue);
+}
+
+/* ---------- Cards / surfaces ---------- */
+.fb-surface,
+.checkout__review,
+.login,
+.product-card__card,
+.cart__line.table__row {
+  background: var(--fb-card);
+  border: 1px solid var(--fb-border);
+  border-radius: 6px;
+  box-shadow: var(--fb-shadow);
+}
+
+.fb-surface--shadow {
+  box-shadow: var(--fb-shadow-lg);
+}
+
+.fb-page-title {
+  letter-spacing: -0.01em;
+}
+
+.fb-muted {
+  color: var(--fb-muted);
+}
+
+.fb-divider {
+  border-top: 1px solid var(--fb-border);
+}
+
+.fb-section {
+  padding: 1rem;
+}
+
+.fb-sticky {
+  position: sticky;
+  top: 7.25rem;
+}
+
+@media (max-width: 991.98px) {
+  .fb-sticky {
+    position: static;
+  }
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  border-radius: 2px;
+  font-weight: 700;
+}
+
+.btn.btn-primary {
+  background: var(--fb-blue);
+  border-color: var(--fb-blue);
+}
+
+.btn.btn-primary:hover {
+  background: var(--fb-blue-dark);
+  border-color: var(--fb-blue-dark);
+}
+
+.btn.btn-secondary,
+.btn.secondary {
+  background: #fff;
+  border: 1px solid var(--fb-border);
+  color: var(--fb-text);
+}
+
+.btn.btn-secondary:hover,
+.btn.secondary:hover {
+  border-color: rgba(0,0,0,0.18);
+}
+
+/* ---------- Product grid ---------- */
+.product-card__img {
+  object-fit: contain;
+  background: #fff;
+}
+
+.product-card__title {
+  font-weight: 600;
+  min-height: 2.4em;
+}
+
+.product-card__price {
+  color: var(--fb-text);
+}
+
+.product-card__badge {
+  border-radius: 2px;
+  background: rgba(0, 128, 0, 0.08);
+  border: 1px solid rgba(0, 128, 0, 0.18);
+  color: #0a7a0a;
+}
+
+/* ---------- Home (Flipkart-like sections) ---------- */
+.fb-home-hero {
+  border-radius: 6px;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(40,116,240,0.15), rgba(255,159,0,0.12));
+  border: 1px solid var(--fb-border);
+  box-shadow: var(--fb-shadow);
+}
+
+.fb-home-hero__inner {
+  padding: 1.25rem;
+}
+
+.fb-home-cats {
+  background: #fff;
+  border: 1px solid var(--fb-border);
+  border-radius: 6px;
+  box-shadow: var(--fb-shadow);
+  padding: 0.75rem;
+}
+
+.fb-home-cats__list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+@media (max-width: 991.98px) {
+  .fb-home-cats__list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.fb-home-cat {
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  padding: 0.5rem 0.25rem;
+  border-radius: 6px;
+}
+
+.fb-home-cat:hover {
+  background: rgba(40, 116, 240, 0.06);
+}
+
+.fb-home-cat__icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  margin: 0 auto 0.4rem;
+  background: rgba(40, 116, 240, 0.10);
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  color: var(--fb-blue);
+}
+
+.fb-home-cat__label {
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  margin-top: 2.25rem;
+  background: #fff;
+  border-top: 1px solid var(--fb-border);
+}
+

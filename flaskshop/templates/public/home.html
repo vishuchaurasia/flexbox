@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div class="row g-3 g-lg-4">
+    <div class="col-12">
+      <div class="fb-home-hero">
+        <div class="fb-home-hero__inner">
+          <div class="row align-items-center g-3">
+            <div class="col-12 col-lg-7">
+              <h1 class="h3 fb-page-title mb-2">FlexBox</h1>
+              <p class="fb-muted mb-3">{% trans %}Deals across electronics, fashion, home and more.{% endtrans %}</p>
+              <a class="btn btn-primary" href="{{ url_for('public.home') }}#featured">{% trans %}Shop deals{% endtrans %}</a>
+              <a class="btn btn-secondary ms-2" href="{{ url_for('public.home') }}#categories">{% trans %}Browse categories{% endtrans %}</a>
+            </div>
+            <div class="col-12 col-lg-5">
+              <div class="fb-surface fb-section">
+                <h2 class="h6 mb-2">{% trans %}Quick search{% endtrans %}</h2>
+                <form class="d-flex gap-2" action="/search">
+                  <input class="form-control" type="text" name="q" value="{{ request.args.get('q', '') }}"
+                         placeholder="{% trans %}Search for products{% endtrans %}" required>
+                  <button class="btn btn-primary" type="submit">{% trans %}Search{% endtrans %}</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12" id="categories">
+      <div class="fb-home-cats">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h2 class="h6 mb-0">{% trans %}Top categories{% endtrans %}</h2>
+          <span class="fb-muted">{% trans %}Swipe or scroll{% endtrans %}</span>
+        </div>
+        <div class="fb-home-cats__list">
+          {% for item in top_menu[:10] %}
+            <a class="fb-home-cat" href="{{ item.url }}">
+              <div class="fb-home-cat__icon">{{ item.title[:1] }}</div>
+              <div class="fb-home-cat__label">{{ item.title }}</div>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    {% if products %}
+      <div class="col-12" id="featured">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+          <h2 class="h5 mb-0">{% trans %}Featured products{% endtrans %}</h2>
+          <a class="link--styled" href="{{ url_for('public.search') }}?q=">{% trans %}View all{% endtrans %}</a>
+        </div>
+        <div class="row g-3">
+          {% include('products/_items.html') %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

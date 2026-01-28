@@ -1,0 +1,47 @@
+{% extends "no_nav_base.html" %}
+{% from 'bootstrap5/form.html' import render_field %}
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-12 col-lg-10">
+    <div class="login fb-surface fb-surface--shadow">
+      <div class="row g-0">
+        <div class="col-md-6 d-none d-md-block p-4">
+          <div class="login__register-link">
+            <h2 class="h4 fb-page-title mb-2">{% trans %}Already have an account?{% endtrans %}</h2>
+            <p class="fb-muted mb-3">{% trans %}Log in to see your orders and manage addresses.{% endtrans %}</p>
+            <img class="signup-img lazyload lazypreload" data-src="{{ url_for('static', filename='placeholders/flexbox/hero.svg') }}">
+            <div class="mt-3">
+              <a rel="nofollow" href="{{ url_for('account.login') }}" class="btn btn-secondary">
+                {% trans %}Log in{% endtrans %}
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 p-4 p-lg-5">
+          <form method="post" action="" id="registerForm" novalidate>
+            <fieldset>
+              <h1 class="h4 fb-page-title mb-1">{% trans %}Create an account{% endtrans %}</h1>
+              <p class="fb-muted mb-3">{% trans %}It only takes a minute.{% endtrans %}</p>
+              {{ form.csrf_token }}
+              {{ render_field(form.username) }}
+              {{ render_field(form.email) }}
+              {{ render_field(form.password) }}
+              {{ render_field(form.confirm) }}
+            </fieldset>
+            <div class="d-grid gap-2 mt-3">
+              <button type="submit" class="btn btn-primary">
+                {% trans %}Create account{% endtrans %}
+              </button>
+              <a rel="nofollow" href="{{ url_for('account.login') }}" class="btn btn-secondary d-md-none">
+                {% trans %}I already have an account{% endtrans %}
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
